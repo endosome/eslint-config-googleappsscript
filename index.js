@@ -1,4 +1,4 @@
-/* cspell:words googleappsscript */
+/* cspell:words googleappsscript endosome */
 import nodeConfig from '@endosome/eslint-config-node';
 import { defineConfig } from 'eslint/config';
 import nodeGlobals from 'globals';
