@@ -1,6 +1,6 @@
 {
   "name": "@endosome/eslint-config-googleappsscript",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shared ESLint 10 flat config for Google Apps Script projects, built on @endosome/eslint-config-node",
   "keywords": [
     "eslint",
