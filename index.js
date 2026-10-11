@@ -8,6 +8,8 @@ import appsScriptGlobals from './globals.js';
 const sourceFiles = ['**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'];
 const scriptFiles = ['**/*.js'];
 const typeScriptFiles = ['**/*.{ts,tsx,mts,cts}'];
+// the sidebars and dialogs: HTML with scripts that run in the browser, their functions are called from the markup
+const htmlFiles = ['**/*.html'];
 
 // Apps Script does not run on Node.js: none of the n (eslint-plugin-n) rules apply
 const nodeRulesOff = Object.fromEntries(
@@ -25,14 +27,23 @@ export default defineConfig([
 
   {
     name: 'endosome-googleappsscript/rules',
-    files: sourceFiles,
+    files: [...sourceFiles, ...htmlFiles],
     rules: {
       ...nodeRulesOff,
 
-      // Google calls menu handlers, triggers and web app entry points by name, so a function or a constant at the
-      // top level of a file is not "unused". Variables inside functions still are. Without an import or an export
+      // Google calls menu handlers, triggers and web app entry points by name (and a sidebar calls its functions from
+      // the markup), so a function or a constant at the top level of a file is not "unused". Variables inside functions still are. Without an import or an export
       // a TypeScript file is a script and its top level is the global scope, which `vars: 'local'` skips.
-      '@typescript-eslint/no-unused-vars': ['error', { vars: 'local', argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          vars: 'local',
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
+      ],
 
       // the build provides modules such as 'GoogleSpreadsheets' (typings in types/*.d.ts); npm package names
       // cannot contain capitals, so a bare specifier that starts with a capital is one of those
@@ -50,6 +61,13 @@ export default defineConfig([
     name: 'endosome-googleappsscript/typescript',
     files: typeScriptFiles,
     languageOptions: { sourceType: 'commonjs' },
+  },
+
+  // the scripts of a sidebar are classic browser scripts: their functions are globals the markup calls
+  {
+    name: 'endosome-googleappsscript/html',
+    files: htmlFiles,
+    languageOptions: { sourceType: 'script' },
   },
 
   // JavaScript files are scripts that share one global scope

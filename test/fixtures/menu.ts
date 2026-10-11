@@ -7,3 +7,13 @@ function runReport(): void {
 
   Logger.log('done');
 }
+
+function readLocale(): string {
+  try {
+    return Session.getActiveUserLocale();
+  } catch (_) {
+    const [_first, second] = ['a', 'b'];
+
+    return second;
+  }
+}

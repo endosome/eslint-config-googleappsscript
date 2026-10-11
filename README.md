@@ -37,9 +37,10 @@ rules that differ from the earlier ESLint 8 config).
 
 | | |
 |---|---|
-| Top-level declarations are never "unused" | Google calls menu handlers, triggers and web app entry points by name. `@typescript-eslint/no-unused-vars` skips variables, functions and imports at the top level of a file (`vars: 'local'`) and still reports unused variables inside functions. Parameters and variables that start with `_` are ignored. |
+| Top-level declarations are never "unused" | Google calls menu handlers, triggers and web app entry points by name. `@typescript-eslint/no-unused-vars` skips variables, functions and imports at the top level of a file (`vars: 'local'`) and still reports unused variables inside functions. Parameters, caught errors, destructured array items and variables that start with `_` are ignored. |
 | TypeScript files are CommonJS scripts | `sourceType: 'commonjs'`, so the top level of a file is not a module scope, whatever `"type"` the `package.json` has. |
 | Modules provided by the build resolve | `import-x/no-unresolved` ignores bare specifiers that start with a capital letter, such as `import { x } from 'GoogleSpreadsheets'`. npm package names cannot have capitals, so those are modules the build supplies. Other missing modules are still reported. |
+| HTML sidebars and dialogs are linted as browser scripts | `.html` files get the same rules (no `n/*`, `vars: 'local'`) and `sourceType: 'script'`, so a function that the markup calls from `onclick` is not "unused". |
 | No Node.js rules | The `n/*` rules are off, and the Node.js globals (`process`, `require`, `setTimeout`, `URL`, ...) are not defined. |
 | JavaScript files are scripts | `sourceType: 'script'` and `no-undef` with the Apps Script globals: the services (`SpreadsheetApp`, `GmailApp`, `Logger`, `Utilities`, ...), `console` and the advanced services. TypeScript is checked by `tsc` instead. |
 | No module-only rules | `unicorn/prefer-module` and `unicorn/prefer-top-level-await` are off. |

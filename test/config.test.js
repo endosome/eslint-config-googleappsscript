@@ -27,6 +27,31 @@ test('top-level functions are not reported as unused, variables inside functions
   assert.match(unused[0].message, /'unused'/);
 });
 
+test('names that start with an underscore are ignored, also for caught errors and destructured arrays', async () => {
+  const unused = reports(await lint('menu.ts'), '@typescript-eslint/no-unused-vars').map(message => message.message);
+
+  assert.deepEqual(
+    unused.filter(message => /'(_|_event|_first)'/.test(message)),
+    []
+  );
+});
+
+test('functions of a sidebar are not unused and the n rules are off in HTML', async () => {
+  const messages = await lint('sidebar.html');
+
+  assert.deepEqual(
+    messages.filter(message => message.ruleId === '@typescript-eslint/no-unused-vars' || message.ruleId?.startsWith('n/')),
+    []
+  );
+
+  const control = await lint('sidebar.html', 'eslint.node.config.js');
+
+  assert.ok(
+    control.some(message => message.ruleId === '@typescript-eslint/no-unused-vars'),
+    'the Node config reports copyToClipboard'
+  );
+});
+
 test('the plain Node config reports those top-level functions (control)', async () => {
   const messages = await lint('menu.ts', 'eslint.node.config.js');
   const names = reports(messages, '@typescript-eslint/no-unused-vars').map(message => message.message);
